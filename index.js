@@ -41,8 +41,11 @@ async function getCourses() {
     // or
     // and
 
+    const pageNumber = 2;
+    const pageSize = 10;
+
     const courses = await Course
-        // .find({author: 'Mosh', isPublished: true})
+        .find({author: 'Mosh', isPublished: true})
         // .find({price: { $gte: 10, $lte: 20 }})
         // .find({price: { $in: [10, 15, 20] }})
         // .find()
@@ -53,11 +56,11 @@ async function getCourses() {
         // End with Mosh
         // .find({ author: /Mosh$/i })
         // Contain Mosh
-        .find({ author: /.*Mosh.*/i })
-        .limit(10)
+        // .find({ author: /.*Mosh.*/i })
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
         .sort({name: 1})
-        .select({name: 1, tags: 1})
-        .count();
+        .select({name: 1, tags: 1});
 
     console.log(courses);
 }
