@@ -58,8 +58,14 @@ async function createCourse() {
         price: 15
     });
 
-    const result = await course.save();
-    console.log(result);
+    try {
+        const result = await course.save();
+        console.log(result);
+    } catch (ex) {
+        for (field in ex.errors) {
+            console.log(ex.errors[field].message);
+        }
+    }
 }
 
 async function getCourses() {
