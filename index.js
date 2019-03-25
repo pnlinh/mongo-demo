@@ -7,11 +7,29 @@ mongoose.connect('mongodb://localhost/playground')
 
 // Define structuring table
 const courseSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 255,
+    },
+    category: {
+        type: String,
+        required: true,
+        enum: ['web', 'mobile', 'network']
+    },
     author: String,
     tags: [String],
     date: {type: Date, default: Date.now},
-    isPublished: Boolean
+    isPublished: Boolean,
+    price: {
+        type: Number,
+        required: function () {
+            return this.isPublished;
+        },
+        min: 10,
+        max: 200
+    }
 });
 
 // Mapping model
@@ -20,9 +38,11 @@ const Course = mongoose.model('Course', courseSchema);
 async function createCourse() {
     const course = new Course({
         name: 'Angular course',
+        category: '-',
         author: 'Mosh',
         tags: ['angular', 'frontend'],
-        isPublished: true
+        isPublished: true,
+        price: 15
     });
 
     const result = await course.save();
@@ -80,7 +100,7 @@ async function updateCourse(courseId) {
             author: 'Johny',
             isPublished: true
         }
-    }, { new: true });
+    }, {new: true});
 
     // if (!course) return;
 
@@ -98,7 +118,7 @@ async function deleteCourse(courseId) {
     console.log(course);
 }
 
-// createCourse();
+createCourse();
 // getCourses();
 // updateCourse('5c94b9244ebe4863cb257330');
-deleteCourse('5c94b9244ebe4863cb257330');
+// deleteCourse('5c94b9244ebe4863cb257330');
